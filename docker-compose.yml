@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - SENSOR_POSITION_MIN=-1000
+      - SENSOR_POSITION_MAX=1000
+      - WATER_SPEED_MIN=-5
+      - WATER_SPEED_MAX=5
+      - WATER_TEMPERATURE_MIN=-2
+      - WATER_TEMPERATURE_MAX=30
+      - THRUSTERS_SPEED_MIN=-2
+      - THRUSTERS_SPEED_MAX=2
+      - TICK_INTERVAL=1000
+      - SAFE_ZONE_SIZE=500
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"
