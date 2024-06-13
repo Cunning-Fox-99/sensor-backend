@@ -1,8 +1,10 @@
+// index.ts
+
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 import { json } from 'body-parser';
-import { initSensors, getSensorData, updateThrusterSpeed } from './services/sensor.service';
+import { initSensors, getSensorData, updateThrusterSpeed, updateSensorData } from './services/sensor.service';
 import { redisClient } from './utils/redisClient';
 import cors from 'cors';
 
@@ -17,10 +19,12 @@ app.use(json());
 app.post('/sensor/:name/thruster', async (req, res) => {
     const { name } = req.params;
     const { x, y, z } = req.body;
+
     try {
         await updateThrusterSpeed(name, { x, y, z });
         res.status(200).send('Thruster speed updated');
     } catch (error) {
+        console.error('Error updating thruster speed:', error);
         res.status(500).send('Error updating thruster speed');
     }
 });
@@ -40,7 +44,8 @@ const startServer = async () => {
     await initSensors();
 
     const tickInterval = parseInt(process.env.TICK_INTERVAL || '1000', 10);
-    setInterval(() => {
+    setInterval(async () => {
+        await updateSensorData(); // Вызов функции для обновления данных о сенсорах
         const data = getSensorData();
         io.emit('data', data);
     }, tickInterval);

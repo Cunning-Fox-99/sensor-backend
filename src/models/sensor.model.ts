@@ -12,14 +12,5 @@ export interface Sensor {
     thrustersSpeed: Vector3;
     temperature: number;
     lost: boolean;
-}
-
-export interface SensorData {
-    id: string;
-    name: string;
-    position: Vector3;
-    waterSpeed: Vector3;
-    thrustersSpeed: Vector3;
-    temperature: number;
-    lost: boolean;
+    timeToExit: number; // Новое поле для времени до выхода
 }
